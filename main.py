@@ -8,12 +8,13 @@ def main():
     parser.add_argument("-ip", "--ip_address", required=True, help="Target IP address to scan")
     parser.add_argument("-p", "--port_range", required=True, help="Port range to scan (e.g., 20-80)")
     parser.add_argument("-w", "--workers", type=int, default=10, help="Number of worker threads (default: 10)")
-    parser.add_argument("-t", "--timeout", type=int, default=1, help="Socket timeout in seconds (default: 1)")
+    parser.add_argument("-t", "--timeout", type=float, default=1, help="Socket timeout in seconds (default: 1)")
     parser.add_argument("-s", "--stealth", help="Run in stealth mode (no output)")
     args = parser.parse_args()
 
     ip_address = args.ip_address
     port_range = args.port_range
+    timeout = args.timeout
 
     if (ip_address.count('.') != 3 or not all(part.isdigit() and 0 <= int(part) < 256 for part in ip_address.split('.'))):
         print("Invalid IP address format. Please provide a valid IPv4 address.")
@@ -31,7 +32,7 @@ def main():
     start_time = time.time()
 
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-        executor.map(scan, [ip_address] * len(port_chunks), port_chunks)
+        executor.map(scan, [ip_address] * len(port_chunks), port_chunks, [timeout] * len(port_chunks))
 
     end_time = time.time()
     print(f"Scanning completed in {end_time - start_time:.2f} seconds")          
