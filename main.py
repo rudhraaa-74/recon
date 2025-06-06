@@ -15,6 +15,11 @@ def main():
     ip_address = args.ip_address
     port_range = args.port_range
     timeout = args.timeout
+    workers= args.workers
+
+    port_ranges = port_range.split('-')
+    ports_per_worker = (int(port_ranges[1])-int(port_ranges[0]))//workers  # Number of ports each worker will handle
+
 
     if (ip_address.count('.') != 3 or not all(part.isdigit() and 0 <= int(part) < 256 for part in ip_address.split('.'))):
         print("Invalid IP address format. Please provide a valid IPv4 address.")
@@ -24,7 +29,7 @@ def main():
         print("Invalid port range format. Please provide a valid range (e.g., 20-80).")
         return
 
-    MAX_WORKERS = Workers(port_range)
+    MAX_WORKERS = Workers(port_range, ports_per_worker)
 
 
     port_chunks = generate_port_chunks(port_range, MAX_WORKERS)
