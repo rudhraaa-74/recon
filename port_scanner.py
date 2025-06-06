@@ -1,5 +1,7 @@
 from concurrent.futures import ThreadPoolExecutor
 import socket
+import multiprocessing
+
 
 
 def generate_port_chunks(port_range,MAX_WORKERS):
@@ -16,14 +18,14 @@ def generate_port_chunks(port_range,MAX_WORKERS):
 
 
 
-def scan(ip_address, port_chunk):
-    print(f"Scanning ports {port_chunk[0]}-{port_chunk[1]} on {ip_address}")
-
+def scan(ip_address, port_chunk,timeout):
+   # print(f"Scanning ports {port_chunk[0]}-{port_chunk[1]} on {ip_address}")
+    print(f"Using timeout: {timeout}")
     for port in range(int(port_chunk[0]), int(port_chunk[1])):
         
         try:
             scan_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            scan_socket.settimeout(1)
+            scan_socket.settimeout(timeout)  # Set a timeout for the socket connection
             scan_socket.connect((ip_address, port))
             print(f"Port {port} is open")
 
@@ -36,11 +38,14 @@ def Workers(port):
     port_ranges = port.split('-')
     start_port = int(port_ranges[0])
     end_port = int(port_ranges[1])
- 
-    ports_per_worker = 10  # Number of ports each worker will handle
+
+    cpu_cores = multiprocessing.cpu_count()
+    ideal_cap = cpu_cores * 50  # e.g., 8 cores * 50 = 400
+
+    ports_per_worker = 10 # Number of ports each worker will handle
 
     port_range= end_port - start_port
-    max_workers = min(400, max(10,port_range // ports_per_worker))
+    max_workers = min(ideal_cap, max(10,port_range // ports_per_worker))
 
     return max_workers if max_workers > 0 else 1
    
