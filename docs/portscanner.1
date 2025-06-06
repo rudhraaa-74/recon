@@ -1,1 +1,45 @@
+NAME
+       recon - Reconnaissance tool with support for port scanning, subdomain enumeration, and more
 
+SYNOPSIS
+       python3 recon --mode <mode> [options] --ip <IP> --p <start-end>
+
+DESCRIPTION
+       A fast and modular reconnaissance tool written in Python that performs common scanning tasks.
+
+       Supported modes include:
+           portscan     - Scan a range of ports on a target IP
+           subenum      - Enumerate subdomains for a target domain
+           dirbust      - Discover hidden paths/directories on a website (planned)
+
+OPTIONS
+       -ip, --ip_address <IP>
+              Target IP address or domain to scan
+
+       -p, --port_range <start-end>
+              Port range to scan (e.g., 20-80)
+
+       -w, --workers <int>
+              Number of worker threads (default: 10)
+
+       -t, --timeout <float>
+              Timeout per socket connection in seconds (default: 1)
+
+       -s, --stealth
+              Run in stealth mode (suppress output, useful for silent scanning)
+
+       --mode <string>
+              Mode of operation (e.g., portscan, subenum). Required.
+
+EXAMPLES
+       Scan ports 1-1000 on 192.168.1.1 with 50 workers:
+           python3 recon --mode portscan -ip 192.168.1.1 -p 1-1000 -w 50
+
+       Subdomain enumeration on example.com:
+           python3 recon --mode subenum -ip example.com
+
+AUTHOR
+       Rudhra Koul
+
+REPORTING BUGS
+       Open issues on GitHub: https://github.com/rudhraaa-74/recon/issues
