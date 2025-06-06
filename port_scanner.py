@@ -34,7 +34,7 @@ def scan(ip_address, port_chunk,timeout):
 
 
 
-def Workers(port):
+def Workers(port,ports_per_worker):
     port_ranges = port.split('-')
     start_port = int(port_ranges[0])
     end_port = int(port_ranges[1])
@@ -42,7 +42,7 @@ def Workers(port):
     cpu_cores = multiprocessing.cpu_count()
     ideal_cap = cpu_cores * 50  # e.g., 8 cores * 50 = 400
 
-    ports_per_worker = 10 # Number of ports each worker will handle
+    # Number of ports each worker will handle
 
     port_range= end_port - start_port
     max_workers = min(ideal_cap, max(10,port_range // ports_per_worker))
